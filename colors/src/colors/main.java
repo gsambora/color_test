@@ -37,6 +37,8 @@ public class main {
 		
 		return crossings;
 	}
+
+	
 	
 	/**
 	 * Main function
@@ -49,32 +51,55 @@ public class main {
 		HashMap<Integer, crossing> crossings = makeCrossings(k6_1);
 		
 		// For each crossing, print out the crossing number, strand list, color list, and whether it is valid or complete
-		for ( int i = 0; i < crossings.size(); i++ ) {
-			System.out.println("Crossing number: "+i);
-			System.out.println(crossings.get(i).strandList());
-			System.out.println("Colors: " + crossings.get(i).valueList );
-			System.out.println(crossings.get(i).isValid());
-			System.out.println(crossings.get(i).isComplete());
-		}
-		
-		// Right now, trying to figure out how to apply the changes given from the makeValid function 
-		HashMap<Integer, String> changes = crossings.get(crossings.size()-1).makeValid();
-		ArrayList<Integer> changeStrandNos = new ArrayList<Integer>();
-		changeStrandNos.addAll(changes.keySet());
-		
-		for( int i = crossings.size(); i > -1; i-- ) {
-			for( int j = 0; i < changeStrandNos.size(); i++ ) {
-				crossings.get(i).editCross(changeStrandNos.get(j), changes.get(changeStrandNos.get(j)));
-			}	
-		}
-		/*
-		for ( int i = 0; i < crossings.size(); i++ ) {
+		/*for ( int i = 0; i < crossings.size(); i++ ) {
 			System.out.println("Crossing number: "+i);
 			System.out.println(crossings.get(i).strandList());
 			System.out.println("Colors: " + crossings.get(i).valueList );
 			System.out.println(crossings.get(i).isValid());
 			System.out.println(crossings.get(i).isComplete());
 		}*/
+		
+		// Right now, trying to figure out how to apply the changes given from the makeValid function 
+		/*HashMap<Integer, String> changes = crossings.get(crossings.size()-1).make3Valid();
+		ArrayList<Integer> changedStrands = new ArrayList<Integer>();
+		changedStrands.addAll(changes.keySet());
+		
+		for (int c = 0; c < changes.size(); c++ ) {
+			for ( int i = 0; i < crossings.size(); i++ ) {
+				if ( crossings.get(i).strandsCross.containsKey(changedStrands.get(c))) {
+					crossings.get(i).putStrand(changedStrands.get(c), changes.get(changedStrands.get(c)));
+					crossings.get(i).updateValues();
+				}
+			}
+		}*/
+		
+		for( int k = 0; k < crossings.size(); k++ ) {
+			HashMap<Integer, String> changes = crossings.get(k).make3Valid();
+			ArrayList<Integer> changedStrands = new ArrayList<Integer>();
+			changedStrands.addAll(changes.keySet());
+			
+			for (int c = 0; c < changes.size(); c++ ) {
+				for ( int i = 0; i < crossings.size(); i++ ) {
+					if ( crossings.get(i).strandsCross.containsKey(changedStrands.get(c))) {
+						crossings.get(i).putStrand(changedStrands.get(c), changes.get(changedStrands.get(c)));
+						crossings.get(i).updateValues();
+					}
+				}
+			}
+			
+		}
+		
+		for ( int i = 0; i < crossings.size(); i++ ) {
+			System.out.println("Crossing number: "+i);
+			System.out.println(crossings.get(i).strandList());
+			System.out.println("Colors: " + crossings.get(i).valueList );
+			System.out.println(crossings.get(i).isValid());
+			System.out.println(crossings.get(i).isComplete());
+		}
+		
+		
+		
+		
 		
 	}
 
