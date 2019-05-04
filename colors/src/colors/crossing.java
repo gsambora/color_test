@@ -131,42 +131,6 @@ public class crossing {
 		return assigned;
 	}
 	
-	/**
-	 * In progress - Function to make this crossing valid. First trying to make it work for only one assigned color
-	 * Thought - If the number of unassigned strand colors is 1, then if the two assigned strands have the same color, make the unassigned color the same
-	 * If the two unassigned strands have different colors, not sure what to do
-	 * Having a problem translating this to code 
-	 * @return - Hashmap of changes to make (integer strand number and color pairs that can be entered into editcrossing for all crossings)
-	 */
-	public HashMap<Integer, String> make3Validfrom0() {		
-		for( int i=0; i < 3; i++ ) {
-			if( this.possibleColors.contains(valueList.get(i))) {
-				this.possibleColors.remove(this.possibleColors.indexOf(valueList.get(i)));
-			}
-		}
-		
-		System.out.println(this.strandList());
-		HashMap<Integer, String> changes = new HashMap<Integer, String>();
-		
-		this.strandsCross.put(this.strandList().get(0), "a");
-		System.out.println(this.strandsCross.get(this.strandList().get(0)));
-		changes.put(this.strandList().get(0), "a");
-		
-		this.strandsCross.put(this.strandList().get(1), "b");
-		System.out.println(this.strandsCross.get(this.strandList().get(1)));
-		changes.put(this.strandList().get(1), "b");
-		
-		this.strandsCross.put(this.strandList().get(2), "c");
-		System.out.println(this.strandsCross.get(this.strandList().get(2)));
-		changes.put(this.strandList().get(2), "c");
-		
-		this.updateValues();
-		//this.strandsCross.put(this.unassignedStrands().get(2), "c");
-		
-		System.out.println( this.valueList );
-		return changes;
-	}
-	
 	public HashMap<Integer, String> make3Valid() {		
 		for( int i=0; i < 3; i++ ) {
 			if( this.possibleColors.contains(valueList.get(i))) {
@@ -188,8 +152,41 @@ public class crossing {
 		this.updateValues();
 		//this.strandsCross.put(this.unassignedStrands().get(2), "c");
 		
-		System.out.println( this.valueList );
+		//System.out.println( this.valueList );
 		return changes;
+	}
+	
+	public HashMap<Integer, String> make1Valid( String s ) {
+		String newColor = s;
+		HashMap<Integer, String> changes = new HashMap<Integer, String>();
+		
+		for( int i=0; i < 3; i++ ) {
+			if( this.valueList.get(i).equals("z") != true ) {
+				newColor = this.valueList.get(i);
+			}
+			else {
+				continue;
+			}
+		}
+		
+		for( int i=0; i < 3; i++ ) {
+			
+			if( this.valueList.get(i).equals(newColor) ) {
+				continue;
+			}
+			if( this.valueList.get(i).equals("z")) {
+				this.strandsCross.put(this.unassignedStrands().get(0), newColor);
+			}
+			else {
+				return changes;
+			}
+		}
+		
+		this.updateValues();
+		
+		//System.out.println( this.valueList );
+		return changes;
+		
 	}
 
 }
