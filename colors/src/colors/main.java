@@ -38,10 +38,7 @@ public class main {
 		return crossings;
 	}
 
-	public static HashMap<Integer, crossing> updateColoring( HashMap<Integer, crossing> crossings, ArrayList<Integer> changedStrands, HashMap<Integer, String> changes ) {
-		HashMap<Integer, crossing> initialConditions = new HashMap<Integer, crossing>();
-		initialConditions.putAll(crossings);
-		
+	public static void updateColoring( HashMap<Integer, crossing> crossings, ArrayList<Integer> changedStrands, HashMap<Integer, String> changes ) {
 		for (int c = 0; c < changes.size(); c++ ) {
 			for ( int i = 0; i < crossings.size(); i++ ) {
 				if ( crossings.get(i).strandsCross.containsKey(changedStrands.get(c))) {
@@ -50,9 +47,8 @@ public class main {
 				}
 			}
 		}
-		
-		return initialConditions;
 	}
+	
 	public static Boolean doneColoring( HashMap<Integer, crossing> crossings ) {
 		for ( int i = 0; i < crossings.size(); i++ ) {
 			if ( crossings.get(i).isValid() && crossings.get(i).isComplete() ) {
@@ -86,179 +82,68 @@ public class main {
 			return true;
 		}
 		
+		System.out.println("\nSTARTING CONDITION:");
+		for ( int m = 0; m < crossings.size(); m++ ) {
+			System.out.println("Crossing number: "+m);
+			System.out.println(crossings.get(m).strandList());
+			System.out.println("Colors: " + crossings.get(m).valueList );
+		}
+		
+		HashMap<Integer, crossing> undo = new HashMap<Integer, crossing>();
+		
+		undo.putAll(crossings);		
 		
 		HashMap<Integer, String> changes = crossings.get(i).make3Valid();
 		ArrayList<Integer> changedStrands = new ArrayList<Integer>();
 		changedStrands.addAll(changes.keySet());
-		HashMap<Integer, crossing> undo = updateColoring( crossings, changedStrands, changes );
+		updateColoring( crossings, changedStrands, changes );
 		
 		if( turnAround(crossings) == true ) {
-			crossings.putAll(undo);
-			System.out.println("Resetting crossings");
-			
-		} 
-		
-		else {
-			fixthatbitch(crossings, i+1);
-		}
-		
-		HashMap<Integer, String> changes1 = crossings.get(i).make1Valid("a");
-		ArrayList<Integer> changedStrands1 = new ArrayList<Integer>();
-		changedStrands.addAll(changes.keySet());
-		
-		HashMap<Integer, crossing> undo1 = updateColoring( crossings, changedStrands1, changes1 );
-		
-		if( turnAround(crossings) == true ) {
-			crossings.putAll(undo1);
-			System.out.println("Resetting crossings");
-			
-			for ( int m = 0; m < crossings.size(); m++ ) {
-				System.out.println("Crossing number: "+m);
-				System.out.println(crossings.get(m).strandList());
-				System.out.println("Colors: " + crossings.get(m).valueList );
-				System.out.println(crossings.get(m).isValid());
-				System.out.println(crossings.get(m).isComplete());
-			}
-			
-		} 
-		
-		else {
-			fixthatbitch(crossings, i+1);
-		}
-		
-		HashMap<Integer, String> changes2 = crossings.get(i).make1Valid("b");
-		ArrayList<Integer> changedStrands2 = new ArrayList<Integer>();
-		changedStrands.addAll(changes.keySet());
-		
-		HashMap<Integer, crossing> undo2 = updateColoring( crossings, changedStrands2, changes2 );
-		
-		if( turnAround(crossings) == true ) {
-			crossings.putAll(undo2);
-			System.out.println("Resetting crossings");
-			
-			for ( int m = 0; m < crossings.size(); m++ ) {
-				System.out.println("Crossing number: "+m);
-				System.out.println(crossings.get(m).strandList());
-				System.out.println("Colors: " + crossings.get(m).valueList );
-				System.out.println(crossings.get(m).isValid());
-				System.out.println(crossings.get(m).isComplete());
-			}
-			
-		} 
-		
-		else {
-			fixthatbitch(crossings, i+1);
-		}
-		
-		HashMap<Integer, String> changes3 = crossings.get(i).make3Valid();
-		ArrayList<Integer> changedStrands3 = new ArrayList<Integer>();
-		changedStrands.addAll(changes.keySet());
-		
-		HashMap<Integer, crossing> undo3 = updateColoring( crossings, changedStrands3, changes3 );
-		
-		if( turnAround(crossings) == true ) {
-			crossings.putAll(undo3);
-			System.out.println("Resetting crossings");
-			
-			for ( int m = 0; m < crossings.size(); m++ ) {
-				System.out.println("Crossing number: "+m);
-				System.out.println(crossings.get(m).strandList());
-				System.out.println("Colors: " + crossings.get(m).valueList );
-				System.out.println(crossings.get(m).isValid());
-				System.out.println(crossings.get(m).isComplete());
-			}
-			
-		} 
-		
-		else {
-			fixthatbitch(crossings, i+1);
-		}		
-		
-		/* if ( turnAround(crossings) == true ) {
-			System.out.println("oops");
-			crossings.putAll(undo);
 			HashMap<Integer, String> changes1 = crossings.get(i).make1Valid("a");
 			ArrayList<Integer> changedStrands1 = new ArrayList<Integer>();
 			changedStrands.addAll(changes.keySet());
 			
-			HashMap<Integer, crossing> undo1 = updateColoring( crossings, changedStrands1, changes1 );
-			if ( turnAround(crossings) == true ) {
-				System.out.println("sup dude");
-				crossings.putAll(undo1);
-				
+			updateColoring( crossings, changedStrands1, changes1 );
+			
+			if( turnAround(crossings) == true ) {
 				HashMap<Integer, String> changes2 = crossings.get(i).make1Valid("b");
 				ArrayList<Integer> changedStrands2 = new ArrayList<Integer>();
 				changedStrands.addAll(changes.keySet());
 				
-				HashMap<Integer, crossing> undo2 = updateColoring( crossings, changedStrands2, changes2 );
-				if ( turnAround(crossings) == true ) {
-					System.out.println("fucked up");
-					crossings.putAll(undo2);
+				updateColoring( crossings, changedStrands2, changes2 );
+				
+				if( turnAround(crossings) == true ) {
 					HashMap<Integer, String> changes3 = crossings.get(i).make3Valid();
 					ArrayList<Integer> changedStrands3 = new ArrayList<Integer>();
 					changedStrands.addAll(changes.keySet());
 					
-					HashMap<Integer, crossing> undo3 = updateColoring( crossings, changedStrands3, changes3 );
-					if ( turnAround(crossings) == true ) {
-						System.out.println("hi");
-						crossings.putAll(undo3);
-					}
-					else {
-						fixthatbitch( crossings, i+1 );
-					}
+					updateColoring( crossings, changedStrands3, changes3 );
 					
-				}
+					if( turnAround(crossings) == true ) {
+						System.out.println("we are fucked");
+						return false;
+					} 
+					
+					else {
+						fixthatbitch(crossings, i+1);
+					}	
+					
+				} 
+				
 				else {
-					fixthatbitch( crossings, i+1 );
+					fixthatbitch(crossings, i+1);
 				}
 				
-			}
-			else {
-				fixthatbitch( crossings, i+1 );
-			}
+			} 
 			
-		}
+			else {
+				fixthatbitch(crossings, i+1);
+			}
+		} 
+		
 		else {
-			System.out.println("wat is good");
-			fixthatbitch( crossings, i+1 );
-		}*/
-		
-		
-		/*HashMap<Integer, String> changes1 = crossings.get(i).make1Valid("a");
-		ArrayList<Integer> changedStrands1 = new ArrayList<Integer>();
-		changedStrands.addAll(changes.keySet());
-		
-		HashMap<Integer, crossing> undo1 = updateColoring( crossings, changedStrands1, changes1 );
-		if ( turnAround(crossings) == true ) {
-			crossings.putAll(undo1);
+			fixthatbitch(crossings, i+1);
 		}
-		else {
-			fixthatbitch( crossings, i+1 );
-		}*/
-		
-		/*HashMap<Integer, String> changes2 = crossings.get(i).make1Valid("b");
-		ArrayList<Integer> changedStrands2 = new ArrayList<Integer>();
-		changedStrands.addAll(changes.keySet());
-		
-		HashMap<Integer, crossing> undo2 = updateColoring( crossings, changedStrands2, changes2 );
-		if ( turnAround(crossings) == true ) {
-			crossings.putAll(undo2);
-		}
-		else {
-			fixthatbitch( crossings, i+1 );
-		}*/
-		
-		/*HashMap<Integer, String> changes3 = crossings.get(i).make3Valid();
-		ArrayList<Integer> changedStrands3 = new ArrayList<Integer>();
-		changedStrands.addAll(changes.keySet());
-		
-		HashMap<Integer, crossing> undo3 = updateColoring( crossings, changedStrands3, changes3 );
-		if ( turnAround(crossings) == true ) {
-			crossings.putAll(undo3);
-		}
-		else {
-			fixthatbitch( crossings, i+1 );
-		}*/
 		
 		return false;
 	}

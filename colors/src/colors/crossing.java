@@ -161,25 +161,7 @@ public class crossing {
 		HashMap<Integer, String> changes = new HashMap<Integer, String>();
 		
 		for( int i=0; i < 3; i++ ) {
-			if( this.valueList.get(i).equals("z") != true ) {
-				newColor = this.valueList.get(i);
-			}
-			else {
-				continue;
-			}
-		}
-		
-		for( int i=0; i < 3; i++ ) {
-			
-			if( this.valueList.get(i).equals(newColor) ) {
-				continue;
-			}
-			if( this.valueList.get(i).equals("z")) {
-				this.strandsCross.put(this.unassignedStrands().get(0), newColor);
-			}
-			else {
-				return changes;
-			}
+			this.strandsCross.put(this.strandList().get(i), newColor);
 		}
 		
 		this.updateValues();
