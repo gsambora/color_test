@@ -58,10 +58,15 @@ public class crossing {
 		}
 	}
 	
+	/**
+	 * Just update which colors are at this crossing. If before we had "z, z, z" and we just used the make3valid,
+	 * we need to show that the colors at this crossing are now "a, b, c". 
+	 */
 	public void updateValues() {
 		this.valueList.clear();
 		this.valueList.addAll( this.strandsCross.values() );
 	}
+	
 	/**
 	 * Function that tells if the crossing has been completely colored - there are no undecided "z" color strands
 	 * Doesn't mean that the crossing is valid
@@ -131,42 +136,60 @@ public class crossing {
 		return assigned;
 	}
 	
-	public HashMap<Integer, String> make3Valid() {		
+	/**
+	 * Make this crossing have 3 different colors. 
+	 * 
+	 * @return - list of changes to make (assigned strands and colors) 
+	 */
+	public HashMap<Integer, String> make3Valid() {
+		
+		// First let's see what colors are already used up. 
+		// Let's say this crossing is already partially colored - a, z, b. The only color that can still be assigned is c.
 		for( int i=0; i < 3; i++ ) {
 			if( this.possibleColors.contains(valueList.get(i))) {
 				this.possibleColors.remove(this.possibleColors.indexOf(valueList.get(i)));
 			}
 		}
 		
+		// How many strands do we still need to color?
 		int numberToAssign = this.unassignedStrands().size();
 		
-		
+		// Start keeping track of the changes we're making
 		HashMap<Integer, String> changes = new HashMap<Integer, String>();
 		
+		// Take an unassigned strand and assign it one of the possible colors.
+		// Do this until we've colored all of the strands
+		// In the example, this would just assign our second strand the color c. 
+		// Keep track of our changes
 		for( int i=0; i < numberToAssign; i++ ) {
 			int unassigned = this.unassignedStrands().get(0);
 			this.strandsCross.put( unassigned, this.possibleColors.get(i));
 			changes.put(unassigned, this.possibleColors.get(i));
 		}
 		
+		// Update our crossing information
 		this.updateValues();
-		//this.strandsCross.put(this.unassignedStrands().get(2), "c");
 		
-		//System.out.println( this.valueList );
 		return changes;
 	}
 	
+	/**
+	 * Make all strands in this crossing one color
+	 * 
+	 * @param s - what we will color the three strands
+	 * @return - list of changes to make
+	 */
 	public HashMap<Integer, String> make1Valid( String s ) {
 		String newColor = s;
 		HashMap<Integer, String> changes = new HashMap<Integer, String>();
 		
+		// Just make all of the strands in this crossing the color s. 
 		for( int i=0; i < 3; i++ ) {
 			this.strandsCross.put(this.strandList().get(i), newColor);
 		}
 		
 		this.updateValues();
-		
-		//System.out.println( this.valueList );
+
 		return changes;
 		
 	}
