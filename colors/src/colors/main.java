@@ -49,7 +49,6 @@ public class main {
 					crossings.get(i).updateValues();
 				}
 			}}
-		//return initialConditions;
 		}
 	
 	public static Boolean doneColoring( HashMap<Integer, crossing> crossings ) {
