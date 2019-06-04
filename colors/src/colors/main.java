@@ -6,6 +6,9 @@ import java.util.List;
 
 public class main {
 	
+	static int tries = 0;
+	static ArrayList<HashMap<Integer, crossing>> possColorings = new ArrayList<HashMap<Integer, crossing>>();
+	
 	public main() {
 		
 	}
@@ -16,7 +19,7 @@ public class main {
 	 * @param overstrand - list of integers
 	 * @return - hashmap of hashmaps that gives the 3 strands and their colors paired with a crossing number
 	 */
-	public static HashMap<Integer, crossing > makeCrossings( int[] overstrand ) {
+	public static HashMap<Integer, crossing> makeCrossings( int[] overstrand ) {
 		// initialize the hashmap of hashmaps
 		HashMap<Integer, crossing > crossings = new HashMap<Integer, crossing>();
 		
@@ -66,6 +69,7 @@ public class main {
 	 * @return - true if everything is colored and valid, false otherwise.
 	 */
 	public static Boolean doneColoring( HashMap<Integer, crossing> crossings ) {
+		tries++;
 		for ( int i = 0; i < crossings.size(); i++ ) {
 			if ( crossings.get(i).isValid() && crossings.get(i).isComplete() ) {
 				continue;
@@ -97,6 +101,7 @@ public class main {
 		return false;
 	}
 	
+	
 	/**
 	 * This is the function that does all of the work! It works recursively to color the complete knot.
 	 * 
@@ -108,8 +113,14 @@ public class main {
 		System.out.println("Working on crossing number: " + i);
 		
 		// If we're done, stop everything! We colored the knot. 
-		if( doneColoring(crossings) ) {
+		if( doneColoring(crossings) && tries == Math.pow(3, (crossings.size()))) {
 			System.out.println("We're done!");
+			return true;
+		}
+		
+		if( doneColoring(crossings) && tries < Math.pow(3, (crossings.size()))) {
+			System.out.println("New coloring!");
+			possColorings.add(crossings);
 			return true;
 		}
 		
@@ -123,7 +134,7 @@ public class main {
 		System.out.println("we made crossing " + i + " 3 different colors!");
 		
 		// Making this crossing three different colors didn't work, so let's try making everything color "a". 
-		if( turnAround(crossings) == true ) {
+		if( turnAround(crossings) == true || tries < factorial(crossings.size()) ) {
 			
 			HashMap<Integer, String> changes1 = crossings.get(i).make1Valid("a");
 			ArrayList<Integer> changedStrands1 = new ArrayList<Integer>();
@@ -134,7 +145,7 @@ public class main {
 			System.out.println("we made crossing " + i + " 1 color ---- a!");
 			
 			// Making everything "a" didn't work, let's try "b".
-			if( turnAround(crossings) == true ) {
+			if( turnAround(crossings) == true  || tries < factorial(crossings.size()) ) {
 				System.out.println("something is wrong!");
 				HashMap<Integer, String> changes2 = crossings.get(i).make1Valid("b");
 				ArrayList<Integer> changedStrands2 = new ArrayList<Integer>();
@@ -144,7 +155,7 @@ public class main {
 				System.out.println("we made crossing " + i + " 1 color ---- b!");
 				
 				// Making everything "b" didn't work, let's try "c". This is the last thing we can try. 
-				if( turnAround(crossings) == true ) {
+				if( turnAround(crossings) == true  || tries < factorial(crossings.size()) ) {
 					System.out.println("something is wrong!");
 					HashMap<Integer, String> changes3 = crossings.get(i).make1Valid("c");
 					ArrayList<Integer> changedStrands3 = new ArrayList<Integer>();
@@ -186,9 +197,11 @@ public class main {
 		// First, make the hashmap of crossings given the overstrand list for a knot.
 		HashMap<Integer, crossing> crossings = makeCrossings(k7_7);
 		
+		ArrayList<HashMap<Integer, crossing>> possColorings = new ArrayList<HashMap<Integer, crossing>>();
+		
 		
 		// Make the coloring!
-		colorKnot( crossings, 0 );
+		colorKnot( crossings, 0);
 		
 		// Show us the results.
 		for ( int i = 0; i < crossings.size(); i++ ) {
